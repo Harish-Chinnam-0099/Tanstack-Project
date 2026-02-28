@@ -1,0 +1,31 @@
+inventory-app/
+│
+├── .env
+├── package.json
+│
+└── src/
+    │
+    ├── api/
+    │   ├── auth.ts
+    │   └── recipes.ts
+    │
+    ├── store/
+    │   └── authStore.ts
+    │
+    ├── components/
+    │   ├── Sidebar.tsx
+    │   ├── Navbar.tsx
+    │   └── Layout.tsx
+    │
+    ├── routes/
+    │   ├── __root.tsx
+    │   ├── index.tsx
+    │   ├── login.tsx
+    │   ├── _authenticated.tsx
+    │   └── dashboard/
+    │       ├── index.tsx
+    │       └── recipes.tsx
+    │
+    ├── router.tsx
+    ├── routeTree.gen.ts
+    └── config.ts
