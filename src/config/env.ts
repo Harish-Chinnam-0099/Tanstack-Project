@@ -1,3 +1,3 @@
 export const ENV = {
-  BASE_URL: import.meta.env.VITE_BASE_URL as string,
+  RECIPES_URL: import.meta.env.VITE_RECIPES_URL as string,
 };

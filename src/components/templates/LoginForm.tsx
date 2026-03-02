@@ -13,7 +13,7 @@ export default function LoginForm() {
     mutationFn: (data: LoginInput) => login(data),
     onSuccess: (data) => {
       setAuth(data);
-      navigate({ to: "/products" });
+      navigate({ to: "/recipes" });
     },
   });
 
@@ -27,7 +27,7 @@ export default function LoginForm() {
       mutation.mutate(value);
     },
   });
-  console.log(mutation.error)
+//   console.log(mutation.error)
 
   return (
     <div style={{ textAlign: "center" }}
@@ -41,6 +41,7 @@ export default function LoginForm() {
         }}
       >
         <form.Field
+         
           name="username"
           validators={{
             onSubmit: ({ value }) =>
@@ -49,8 +50,11 @@ export default function LoginForm() {
         >
           {(field) => (
             <div>
+              <label>
+                Username :
+              </label>
               <input
-                placeholder="Username"
+                placeholder="emilys"
                 value={field.state.value}
                 onChange={(e) =>
                   field.handleChange(e.target.value)
@@ -75,9 +79,12 @@ export default function LoginForm() {
         >
           {(field) => (
             <div>
+              <label>
+                Password :
+              </label>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="emilyspass"
                 value={field.state.value}
                 onChange={(e) =>
                   field.handleChange(e.target.value)
@@ -108,89 +115,4 @@ export default function LoginForm() {
     </div> 
   );
 }
-
-
-
-
-
-// import { useState } from "react"
-// import { useMutation } from "@tanstack/react-query"
-// import { login } from "@/api/auth"
-
-// export default function LoginForm() {
-//   // ---------------- STATE ----------------
-//   const [username, setUsername] = useState("")
-//   const [password, setPassword] = useState("")
-
-//   // ---------------- MUTATION ----------------
-//   const loginMutation = useMutation({
-//     mutationFn: login,
-
-//     onSuccess: (data) => {
-//       // store token (example)
-//       localStorage.setItem("accessToken", data.accessToken)
-
-//       console.log("Login Success:", data)
-//     },
-//   })
-
-//   // ---------------- SUBMIT ----------------
-//   const onSubmit = (e: React.FormEvent) => {
-//     e.preventDefault()
-
-//     // ✅ send request even if fields empty
-//     loginMutation.mutate({
-//       username,
-//       password,
-//     })
-//   }
-
-//   // ---------------- ERROR MESSAGE ----------------
-//   const errorMessage =
-//     loginMutation.error instanceof Error
-//       ? loginMutation.error.message
-//       : ""
-
-//   // ---------------- UI ----------------
-//   return (
-//     <div style={{ textAlign: "center", marginTop: "80px" }}>
-//       <h2>Login</h2>
-
-//       <form onSubmit={onSubmit} suppressHydrationWarning>
-//         {/* USERNAME */}
-//         <input
-//           placeholder="Username"
-//           value={username}
-//           onChange={(e) => setUsername(e.target.value)}
-//         />
-
-//         <br />
-//         <br />
-
-//         {/* PASSWORD */}
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//         />
-
-//         <br />
-//         <br />
-
-//         {/* BUTTON */}
-//         <button type="submit" disabled={loginMutation.isPending}>
-//           {loginMutation.isPending ? "Logging in..." : "Login"}
-//         </button>
-
-//         {/* ✅ SERVER ERROR DISPLAY */}
-//         {loginMutation.isError && (
-//           <p style={{ color: "red", marginTop: "10px" }}>
-//             {errorMessage}
-//           </p>
-//         )}
-//       </form>
-//     </div>
-//   )
-// }
 

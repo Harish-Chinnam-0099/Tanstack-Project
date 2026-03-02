@@ -9,12 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProductsRouteImport } from './routes/products'
+import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProtectedRecipesRouteImport } from './routes/_protected/recipes'
+import { Route as ProtectedRecipesupdateIndexRouteImport } from './routes/_protected/recipesupdate/index'
+import { Route as ProtectedRecipesupdateAddRouteImport } from './routes/_protected/recipesupdate/add'
+import { Route as ProtectedRecipesupdateIdRouteImport } from './routes/_protected/recipesupdate/$id'
 
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +25,90 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedRecipesRoute = ProtectedRecipesRouteImport.update({
+  id: '/recipes',
+  path: '/recipes',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ProtectedRecipesupdateIndexRoute =
+  ProtectedRecipesupdateIndexRouteImport.update({
+    id: '/recipesupdate/',
+    path: '/recipesupdate/',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
+const ProtectedRecipesupdateAddRoute =
+  ProtectedRecipesupdateAddRouteImport.update({
+    id: '/recipesupdate/add',
+    path: '/recipesupdate/add',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
+const ProtectedRecipesupdateIdRoute =
+  ProtectedRecipesupdateIdRouteImport.update({
+    id: '/recipesupdate/$id',
+    path: '/recipesupdate/$id',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/recipes': typeof ProtectedRecipesRoute
+  '/recipesupdate/$id': typeof ProtectedRecipesupdateIdRoute
+  '/recipesupdate/add': typeof ProtectedRecipesupdateAddRoute
+  '/recipesupdate/': typeof ProtectedRecipesupdateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/recipes': typeof ProtectedRecipesRoute
+  '/recipesupdate/$id': typeof ProtectedRecipesupdateIdRoute
+  '/recipesupdate/add': typeof ProtectedRecipesupdateAddRoute
+  '/recipesupdate': typeof ProtectedRecipesupdateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/_protected/recipes': typeof ProtectedRecipesRoute
+  '/_protected/recipesupdate/$id': typeof ProtectedRecipesupdateIdRoute
+  '/_protected/recipesupdate/add': typeof ProtectedRecipesupdateAddRoute
+  '/_protected/recipesupdate/': typeof ProtectedRecipesupdateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/products'
+  fullPaths:
+    | '/'
+    | '/recipes'
+    | '/recipesupdate/$id'
+    | '/recipesupdate/add'
+    | '/recipesupdate/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/products'
-  id: '__root__' | '/' | '/products'
+  to:
+    | '/'
+    | '/recipes'
+    | '/recipesupdate/$id'
+    | '/recipesupdate/add'
+    | '/recipesupdate'
+  id:
+    | '__root__'
+    | '/'
+    | '/_protected'
+    | '/_protected/recipes'
+    | '/_protected/recipesupdate/$id'
+    | '/_protected/recipesupdate/add'
+    | '/_protected/recipesupdate/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProductsRoute: typeof ProductsRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/products': {
-      id: '/products'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +118,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/recipes': {
+      id: '/_protected/recipes'
+      path: '/recipes'
+      fullPath: '/recipes'
+      preLoaderRoute: typeof ProtectedRecipesRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/recipesupdate/': {
+      id: '/_protected/recipesupdate/'
+      path: '/recipesupdate'
+      fullPath: '/recipesupdate/'
+      preLoaderRoute: typeof ProtectedRecipesupdateIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/recipesupdate/add': {
+      id: '/_protected/recipesupdate/add'
+      path: '/recipesupdate/add'
+      fullPath: '/recipesupdate/add'
+      preLoaderRoute: typeof ProtectedRecipesupdateAddRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/recipesupdate/$id': {
+      id: '/_protected/recipesupdate/$id'
+      path: '/recipesupdate/$id'
+      fullPath: '/recipesupdate/$id'
+      preLoaderRoute: typeof ProtectedRecipesupdateIdRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
   }
 }
 
+interface ProtectedRouteChildren {
+  ProtectedRecipesRoute: typeof ProtectedRecipesRoute
+  ProtectedRecipesupdateIdRoute: typeof ProtectedRecipesupdateIdRoute
+  ProtectedRecipesupdateAddRoute: typeof ProtectedRecipesupdateAddRoute
+  ProtectedRecipesupdateIndexRoute: typeof ProtectedRecipesupdateIndexRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedRecipesRoute: ProtectedRecipesRoute,
+  ProtectedRecipesupdateIdRoute: ProtectedRecipesupdateIdRoute,
+  ProtectedRecipesupdateAddRoute: ProtectedRecipesupdateAddRoute,
+  ProtectedRecipesupdateIndexRoute: ProtectedRecipesupdateIndexRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProductsRoute: ProductsRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
