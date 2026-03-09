@@ -1,70 +1,60 @@
-import {
-  useNavigate,
-  useSearch,
-} from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
 
-export default function Pagination({
-  totalPages,
-}: {
-  totalPages: number;
-}) {
-
+export default function Pagination({ totalPages }: { totalPages: number }) {
   const navigate = useNavigate();
-
-  const search = useSearch({
-    from: "/_protected/recipes",
-  });
+  const search = useSearch({ from: "/_protected/recipes" });
 
   const page = search.page ?? 1;
-  const limit = search.limit ?? 5;
 
-  const update = (newPage: number, newLimit = limit) => {
+  const goTo = (newPage: number) => {
     navigate({
-      to: "/recipes", 
-      search: () => ({
-        page: newPage,
-        limit: newLimit,
-      }),
+      to: "/recipes",
+      search: (prev) => ({ ...prev, page: newPage }),
     });
   };
 
   return (
-    <div>
-      <select
-      suppressHydrationWarning
-        value={limit}
-        onChange={(e) =>
-          update(1, Number(e.target.value))
-        }
-      >
-        <option value={5}>5</option>
-        <option value={10}>10</option>
-        <option value={20}>20</option>
-      </select>
-
-      <button onClick={() => update(1)}>First</button>
-
-      <button
+    <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
         disabled={page === 1}
-        onClick={() => update(page - 1)}
+        onClick={() => goTo(1)}
+      >
+        First
+      </Button>
+
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page === 1}
+        onClick={() => goTo(page - 1)}
       >
         Prev
-      </button>
+      </Button>
 
-      <span>
+      <span className="text-sm text-muted-foreground px-2">
         Page {page} / {totalPages}
       </span>
 
-      <button
-        disabled={page === totalPages}
-        onClick={() => update(page + 1)}
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page >= totalPages}
+        onClick={() => goTo(page + 1)}
       >
         Next
-      </button>
+      </Button>
 
-      <button onClick={() => update(totalPages)}>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page >= totalPages}
+        onClick={() => goTo(totalPages)}
+      >
         Last
-      </button>
+      </Button>
     </div>
   );
 }

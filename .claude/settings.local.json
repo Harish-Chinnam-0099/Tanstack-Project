@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:dummyjson.com)",
+      "Bash(npx kill-port:*)"
+    ]
+  }
+}

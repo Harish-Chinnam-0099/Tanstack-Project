@@ -67,18 +67,11 @@ function AddRecipe() {
   });
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Add Recipe</h2>
-
+    <div className="max-w-2xl mx-auto py-6">
       <RecipeForm
-        onSubmit={(form) =>
-          addMutation.mutate(form)
-        }
+        onSubmit={(form) => addMutation.mutate(form)}
+        isPending={addMutation.isPending}
       />
-
-      {addMutation.isPending && (
-        <p>Adding recipe...</p>
-      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import { createFileRoute,Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import type { RecipeSearchParams } from "@/types";
 import RecipesTable from "#/components/RecipesTable";
+import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/_protected/recipes")({
   validateSearch: (search): RecipeSearchParams => ({
@@ -17,25 +18,33 @@ export const Route = createFileRoute("/_protected/recipes")({
         ? search.cuisine
         : undefined,
 
-    // sort:
-    //   typeof search.sort === "string"
-    //     ? search.sort
-    //     : undefined,
+    difficulty:
+      typeof search.difficulty === "string"
+        ? search.difficulty
+        : undefined,
 
-    // order:
-    //   search.order === "asc" || search.order === "desc"
-    //     ? search.order
-    //     : undefined,
+    sort:
+      typeof search.sort === "string"
+        ? search.sort
+        : undefined,
+
+    order:
+      search.order === "asc" || search.order === "desc"
+        ? search.order
+        : undefined,
   }),
   component:RecipesPage
 });
 
 function RecipesPage() {
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Recipes</h2>
-      <Link to='/recipesupdate/add'>
-      <button>Add Recipe</button></Link>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Recipes</h2>
+        <Button asChild>
+          <Link to="/recipesupdate/add">Add Recipe</Link>
+        </Button>
+      </div>
       <RecipesTable />
     </div>
   );

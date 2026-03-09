@@ -61,24 +61,20 @@ function EditRecipe() {
 
   const recipeId = Number(id);
 
-  /* ---------------- GET SINGLE RECIPE ---------------- */
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.recipe(recipeId),
     queryFn: () => getRecipe(recipeId),
   });
 
-  /* ---------------- UPDATE MUTATION ---------------- */
   const updateMutation = useMutation({
     mutationFn: (formData: any) =>
       updateRecipe(recipeId, formData),
 
     onSuccess: () => {
-      // refresh recipes list cache
       queryClient.invalidateQueries({
         queryKey: ["recipes"],
       });
 
-      // refresh this recipe cache
       queryClient.invalidateQueries({
         queryKey: queryKeys.recipe(recipeId),
       });
@@ -103,19 +99,12 @@ function EditRecipe() {
     return <h3>Failed to load recipe</h3>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Edit Recipe</h2>
-
+    <div className="max-w-2xl mx-auto py-6">
       <RecipeForm
         initialData={data}
-        onSubmit={(form) =>
-          updateMutation.mutate(form)
-        }
+        onSubmit={(form) => updateMutation.mutate(form)}
+        isPending={updateMutation.isPending}
       />
-
-      {updateMutation.isPending && (
-        <p>Updating recipe...</p>
-      )}
     </div>
   );
 }

@@ -128,25 +128,30 @@ export async function getRecipes(
   const limit = params.limit ?? 5;
   const skip = (page - 1) * limit;
 
-  const query = new URLSearchParams({
-    limit: String(limit),
-    skip: String(skip),
-  });
-
-  if (params.sort) {
-    query.set("sortBy", params.sort);
-    query.set("order", params.order ?? "asc");
-  }
+  // Cuisine and difficulty have no server-side endpoint, so we fetch
+  // all matching records and paginate client-side for accurate totals.
+  const hasClientFilters = !!(params.cuisine || params.difficulty);
 
   let baseUrl = `${ENV.RECIPES_URL}/recipes`;
+  const query = new URLSearchParams();
 
   if (params.search) {
     baseUrl = `${ENV.RECIPES_URL}/recipes/search`;
     query.set("q", params.search);
   }
 
-  if (params.cuisine) {
-    baseUrl = `${ENV.RECIPES_URL}/recipes/tag/${params.cuisine}`;
+  if (params.sort) {
+    query.set("sortBy", params.sort);
+    query.set("order", params.order ?? "asc");
+  }
+
+  if (hasClientFilters) {
+    // limit=0 → DummyJSON returns all records
+    query.set("limit", "0");
+    query.set("skip", "0");
+  } else {
+    query.set("limit", String(limit));
+    query.set("skip", String(skip));
   }
 
   const res = await fetch(`${baseUrl}?${query}`);
@@ -155,18 +160,28 @@ export async function getRecipes(
 
   const json = await res.json();
 
-  let recipes = json.recipes ?? [];
+  let recipes: Recipe[] = json.recipes ?? [];
 
+  // Apply client-side filters on the full dataset
+  if (params.cuisine) {
+    recipes = recipes.filter((r) => r.cuisine === params.cuisine);
+  }
   if (params.difficulty) {
-    recipes = recipes.filter(
-      (r: Recipe) => r.difficulty === params.difficulty
-    );
+    recipes = recipes.filter((r) => r.difficulty === params.difficulty);
+  }
+
+  // Total after filtering (correct count for pagination)
+  const total = hasClientFilters ? recipes.length : (json.total ?? recipes.length);
+
+  // Client-side pagination on the filtered full list
+  if (hasClientFilters) {
+    recipes = recipes.slice(skip, skip + limit);
   }
 
   return {
     recipes,
     data: recipes,
-    total: json.total ?? recipes.length,
+    total,
     skip,
     limit,
     page,

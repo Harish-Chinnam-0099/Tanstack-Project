@@ -10,12 +10,14 @@ export async function login(
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+    
   });
  
   const result =await res.json()
+  
   if (!res.ok) {
     throw new Error(result.message)
-    console.log(ENV.RECIPES_URL)
+    // console.log(ENV.RECIPES_URL)
   }
   return result;
 }
